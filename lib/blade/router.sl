@@ -2,6 +2,7 @@
 
 class Blade {
   class BadArgumentError extends Error {}
+
   class Route {
     ARGUMENT_REGEX = %r{:([\w]+)\+?};
 
@@ -82,8 +83,3 @@ class Blade {
     }
   }
 }
-
-Blade::Router.new(\r {
-  r.get("/hello/:dude", \{}).where('dude, %r{\w+});
-  r.match(['GET, 'POST], "/", \{ print('hi); });
-}).exec(Request);
