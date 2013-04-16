@@ -11,13 +11,13 @@ First step:
 use Blade::Router;
 
 class MyApp {
-  def do_the_dew(name = 'world) {
+  def do_the_dew(name = "world") {
     print("hello #{name}");
   }
 }
 
 Blade::Router.new(λ r {
-  r.get("/hello/:name").where('name, %r{\w+});
+  r.get("/hello/:name").where("name", %r{\w+});
 }).exec(Request);
 ```
 
