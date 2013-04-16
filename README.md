@@ -8,21 +8,17 @@ First step:
 
 ```ruby
 <%
-
 use Blade::Router;
 
 class MyApp {
-  def init {
-    Blade::Router.new;
-      .route("/hello/:who", self:hello)
-      .exec(Request)
-    ;
-  }
-
-  def hello(who = 'world) {
-    print("hello #{who}");
+  def do_the_dew(name = 'world) {
+    print("hello #{name}");
   }
 }
+
+Blade::Router.new(λ r {
+  r.get("/hello/:name").where('name, %r{\w+});
+}).exec(Request);
 ```
 
 Second step: *???*
