@@ -3,7 +3,7 @@
 class Blade {
   class BadArgumentError extends Error {}
   class Route {
-    def self.reader(vs...) {
+    def self.reader(v) {
       define_method(v, \{ get_instance_variable(v) });
     }
 
@@ -29,8 +29,11 @@ class Blade {
 
   class Router {
 
-    HTTP_GET  = 'GET;
-    HTTP_POST = 'POST;
+    HTTP_GET    = 'GET;
+    HTTP_POST   = 'POST;
+    HTTP_PUT    = 'PUT;
+    HTTP_DELETE = 'DELETE;
+    HTTP_PATCH  = 'PATCH;
 
     # @example:
     # Blade::Router.new(\r { r.get("/foo", App:foo_action) });
@@ -41,13 +44,16 @@ class Blade {
 
       @routes = [];
       lamb.call_with_self(self, self);
-    }
+    };
 
-    def get(path, lamb) {
-     route = Route.new(HTTP_GET, path, lamb);
-     @routes.push(route);
-     route;
-    }
+    # define the methods for the different http verbs that we accept:
+    [HTTP_GET, HTTP_POST, HTTP_PUT, HTTP_DELETE, HTTP_PATCH].each(\verb {
+      self.define_method(verb.lower, \(path, lamb) {
+        route = Route.new(verb, path, lamb);
+        @routes.push(route);
+        route;
+      });
+    });
 
     def exec(request) {}
   }
