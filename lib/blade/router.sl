@@ -2,6 +2,7 @@
 
 class Blade {
   class BadArgumentError extends Error {}
+  class NoRoutesError extends Error {}
 
   class Route {
     ARGUMENT_REGEX = %r{:([\w]+)\+?};
@@ -25,10 +26,10 @@ class Blade {
 
     def match(verb, request_path) {
       # verb must match to begin with:
-      return false unless verb == @verb;
+      return false unless @verb.includes(verb);
 
-      @path_re ||= self.get_arguments_regex(@path);
-      print(@path_re);
+      @path_re ||= get_arguments_regex(@path);
+
     }
 
     def where(argument, filter) {
@@ -37,7 +38,10 @@ class Blade {
       self;
     }
 
-    def self.get_arguments_regex(path) {
+    # convert the argument notation /:foo/bar
+    # to a usable regular expression, with a group
+    # and whatnot, yo.
+    def get_arguments_regex(path) {
       ARGUMENT_REGEX.match(path);
     }
   }
@@ -75,6 +79,8 @@ class Blade {
     }
 
     def exec(request) {
+      throw NoRoutesError.new if @routes.empty;
+
       verb = Request.method;
       uri  = Request.env['REQUEST_URI];
       for route in @routes {
